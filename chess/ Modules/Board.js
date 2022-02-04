@@ -8,8 +8,9 @@ const files = ["A", "B", "C", "D", "E", "F", "G", "H"];
 
 export default class Board {
   constructor(board, tiles, pieces) {
+    this.isWhite = false;
+    this.player = "black";
     this.board = board;
-    this.player = ["white", "black"];
     this.boardState = [];
     this.tiles = tiles;
     this.pieces = pieces;
@@ -17,6 +18,7 @@ export default class Board {
     this.select = "";
     this.createBoxPositions();
     this.pieceInteraction();
+    this.turnPlayer();
   }
   createBoxPositions() {
     this.tiles.forEach((cell, idx) => {
@@ -118,11 +120,30 @@ export default class Board {
         tile.append(...fromtile.childNodes);
         piece.classList.toggle("clicked");
         this.select = "";
+        if (this.isWhite) {
+          this.isWhite = false;
+        } else {
+          this.isWhite = true;
+        }
+        this.turnPlayer();
       } else {
         piece.classList.toggle("clicked");
         this.select = "";
       }
     }
+  }
+  turnPlayer() {
+    const whitePiece = document.querySelectorAll(".white-piece");
+    const blackPiece = document.querySelectorAll(".black-piece");
+    whitePiece.forEach((whitePiece, idx) => {
+      if (this.isWhite) {
+        whitePiece.parentElement.style.pointerEvents = "auto";
+        blackPiece[idx].parentElement.style.pointerEvents = "none";
+      } else {
+        whitePiece.parentElement.style.pointerEvents = "none";
+        blackPiece[idx].parentElement.style.pointerEvents = "auto";
+      }
+    });
   }
 
   clickItem(tile) {
